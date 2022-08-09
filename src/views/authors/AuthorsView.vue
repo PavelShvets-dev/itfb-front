@@ -1,25 +1,21 @@
 <template>
-  <div class="home">
-    <div class="books-wrapper">
+  <div>
+    <div class="authors-wrapper">
       <div
-        class="book-container new-item"
-        @click="addBook()"
+        class="author-container new-item"
+        @click="addAuthor()"
         v-show="allowEdit()"
       >
         +
       </div>
       <div
-        class="book-container"
-        v-for="book in books"
-        :key="book.id"
-        @click="openBookDetails(book.id)"
+        class="author-container"
+        v-for="author in authors"
+        :key="author.id"
+        @click="openAuthorDetails(author.id)"
       >
-        <div class="author-wrapper">
-          <p v-for="author in book.authors" :key="author.id">
-            {{ author.name }}
-          </p>
-        </div>
-        <h1>{{ book.name }}</h1>
+        <div class="author-img"></div>
+        <h1>{{ author.name }}</h1>
       </div>
     </div>
   </div>
@@ -27,12 +23,12 @@
 
 <script lang="ts">
 import { defineComponent, inject } from "vue";
-import { Book } from "@/models/book.model";
 import axios from "axios";
+import { Author } from "@/models/author.model";
 import AccountService from "@/services/account.service";
 
 export default defineComponent({
-  name: "HomeView",
+  name: "AuthorsView",
 
   setup() {
     const accountService = inject("accountService") as AccountService;
@@ -44,21 +40,21 @@ export default defineComponent({
 
   data() {
     return {
-      books: Array<Book>(),
+      authors: Array<Author>(),
     };
   },
 
   mounted() {
-    this.loadBooks().then((response) => {
-      this.books = response;
+    this.loadAuthors().then((response) => {
+      this.authors = response;
     });
   },
 
   methods: {
-    loadBooks(): Promise<Array<Book>> {
-      return new Promise<Array<Book>>((resolve) => {
+    loadAuthors(): Promise<Array<Author>> {
+      return new Promise<Array<Author>>((resolve) => {
         axios
-          .get(`${process.env.VUE_APP_API_URL}api/book/list`)
+          .get(`${process.env.VUE_APP_API_URL}api/author/list`)
           .then((response) => {
             resolve(response.data);
           })
@@ -69,11 +65,11 @@ export default defineComponent({
       });
     },
 
-    openBookDetails(id: number): void {
+    openAuthorDetails(id: number): void {
       this.$router.push({
-        name: "book",
+        name: "author",
         params: {
-          bookId: id,
+          authorId: id,
         },
       });
     },
@@ -82,9 +78,9 @@ export default defineComponent({
       return this.accountService.hasAnyAuthority(["admin", "user"]);
     },
 
-    addBook(): void {
+    addAuthor(): void {
       this.$router.push({
-        name: "book",
+        name: "author",
         params: {
           addNew: "true",
         },
@@ -95,14 +91,14 @@ export default defineComponent({
 </script>
 
 <style scoped>
-.books-wrapper {
+.authors-wrapper {
   display: flex;
   flex-flow: row wrap;
   justify-content: space-around;
   align-content: flex-start;
 }
 
-.book-container {
+.author-container {
   background: #3366cc;
   margin-bottom: 40px;
   width: 30vw;
@@ -114,18 +110,18 @@ export default defineComponent({
 
   display: flex;
   flex-flow: column;
-  justify-content: flex-start;
+  justify-content: flex-end;
   align-items: center;
   color: whitesmoke;
   font-family: Roboto;
   cursor: pointer;
 }
 
-.author-wrapper {
-  display: flex;
-  flex-flow: row wrap;
-  justify-content: space-around;
-  width: 50%;
+.author-img {
+  background: rgba(255, 255, 255, 0.4);
+  width: 10vw;
+  height: 10vw;
+  border-radius: 50%;
 }
 
 .new-item {

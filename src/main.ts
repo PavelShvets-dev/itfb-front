@@ -1,5 +1,15 @@
-import { createApp } from 'vue'
-import App from './App.vue'
-import router from './router'
+import { createApp, reactive } from 'vue';
+import App from './App.vue';
+import router from './router';
+import AccountService from './services/account.service';
+import store from './store/index';
 
-createApp(App).use(router).mount('#app')
+const accountService = new AccountService();
+
+createApp(App)
+    .use(router)
+    .use(store)
+    .provide(
+        'accountService', reactive(accountService),
+    )
+    .mount('#app')

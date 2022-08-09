@@ -1,10 +1,29 @@
 <template>
   <nav>
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
+    <router-link to="/">Книги</router-link> |
+    <router-link to="/authors">Авторы</router-link> |
+    <router-link to="/about">Информация</router-link>
+    <span v-show="isAuthentificated"> | </span>
+    <router-link to="/users" v-show="isAuthentificated"
+      >Пользователи</router-link
+    >
   </nav>
-  <router-view/>
+  <router-view />
 </template>
+
+<script lang="ts">
+import { defineComponent } from "vue";
+import store from "./store";
+
+export default defineComponent({
+  computed: {
+    isAuthentificated(): boolean {
+      return store.getters.authenticated;
+    },
+  },
+});
+</script>
+
 
 <style>
 #app {
@@ -25,6 +44,6 @@ nav a {
 }
 
 nav a.router-link-exact-active {
-  color: #42b983;
+  color: #2c3e50;
 }
 </style>
